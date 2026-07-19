@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_DB: forestwatch
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports: ["5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+  app:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@db:5432/forestwatch
+      SECRET_KEY: local-development-secret
+      CORS_ORIGINS: http://localhost:8000,http://localhost:5173
+      SADMIN_EMAIL: sadmin@example.gov.vn
+      SADMIN_PASSWORD: ChangeMe123!
+    depends_on: [db]
+volumes:
+  pgdata:
