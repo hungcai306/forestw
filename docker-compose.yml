@@ -6,17 +6,28 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports: ["5432:5432"]
-    volumes: ["pgdata:/var/lib/postgresql/data"]
-  app:
-    build: .
-    ports: ["8000:8000"]
+    volumes: ["forestwatch_db:/var/lib/postgresql/data"]
+  api:
+    image: python:3.12-slim
+    working_dir: /app
+    command: sh -c "pip install -r requirements.txt && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    volumes: ["./backend:/app"]
     environment:
       DATABASE_URL: postgresql+psycopg://postgres:postgres@db:5432/forestwatch
-      SECRET_KEY: local-development-secret
-      CORS_ORIGINS: http://localhost:8000,http://localhost:5173
+      SECRET_KEY: local-secret
+      CORS_ORIGINS: http://localhost:5173
       SADMIN_USERNAME: sadmin
       SADMIN_PASSWORD: ChangeMe123!
-      ADMIN_API_BASE: https://34tinhthanh.com/api
+    ports: ["8000:8000"]
     depends_on: [db]
+  web:
+    image: node:20-alpine
+    working_dir: /app
+    command: sh -c "npm ci && npm run dev -- --host 0.0.0.0"
+    volumes: ["./frontend:/app"]
+    environment:
+      VITE_API_URL: http://localhost:8000/api/v1
+    ports: ["5173:5173"]
+    depends_on: [api]
 volumes:
-  pgdata:
+  forestwatch_db:

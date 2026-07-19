@@ -1,74 +1,38 @@
-# Hue ForestWatch — Render-ready starter
+# Hue ForestWatch — Render Production Starter
 
-Monorepo MVP cho hệ thống giám sát biến động rừng TP Huế, quản trị 5 cấp và chính quyền địa phương 2 cấp.
+Kiến trúc triển khai:
 
-## Thành phần có sẵn
+- `hue-forestwatch-web`: React/Vite Static Site.
+- `hue-forestwatch-api`: FastAPI Web Service.
+- `hue-forestwatch-db`: PostgreSQL/PostGIS.
 
-- FastAPI + PostgreSQL/PostGIS.
-- React + TypeScript + OpenLayers.
-- JWT, đăng ký/đăng nhập, phê duyệt tài khoản.
-- Vai trò: `SADMIN`, `ADMIN`, `MODERATOR`, `SUSER`, `USER`.
-- Phạm vi quyền theo nhóm, trạm, mã xã/phường và loại rừng.
-- Đồng bộ danh mục xã/phường qua adapter API `34tinhthanh.com`.
-- Health check, Swagger API và Render Blueprint.
-- Bản đồ nền Google Satellite và lớp nhãn Google, không cấu hình API key.
+## Triển khai
 
-## Deploy lên Render
+1. Đưa toàn bộ mã nguồn lên GitHub.
+2. Render → **New** → **Blueprint**.
+3. Chọn repository; Render đọc `render.yaml`.
+4. Nhập `SADMIN_PASSWORD` khi được yêu cầu.
+5. Mở `https://hue-forestwatch-web.onrender.com`.
 
-1. Tạo repository GitHub và đẩy toàn bộ thư mục này lên nhánh `main`.
-2. Trong Render chọn **New → Blueprint**, kết nối repository. Render mặc định đọc `render.yaml` ở thư mục gốc.
-3. Nhập các biến được yêu cầu:
-   - `SADMIN_USERNAME`: tên đăng nhập Tổng Quản trị viên, mặc định `sadmin`.
-   - `SADMIN_PASSWORD`: mật khẩu ban đầu, tối thiểu 8 ký tự.
-4. Chọn **Deploy Blueprint**.
-5. Sau khi deploy, truy cập URL dịch vụ. Swagger tại `/docs`; health check tại `/api/v1/health`.
-6. Đăng nhập bằng tài khoản SAdmin đã nhập ở bước 3 và đổi mật khẩu khi bổ sung module hồ sơ cá nhân.
+Tài khoản mặc định: `sadmin`.
 
-> Render Free phù hợp thử nghiệm, không nên dùng cho dữ liệu nhà nước hoặc sản xuất. Chuyển web service và PostgreSQL sang gói trả phí, bật backup và giới hạn truy cập trước khi vận hành chính thức.
+## Địa chỉ dịch vụ
 
-## Chạy cục bộ
+- Web: `https://hue-forestwatch-web.onrender.com`
+- API: `https://hue-forestwatch-api.onrender.com`
+- Swagger: `https://hue-forestwatch-api.onrender.com/docs`
+
+## Chạy local
 
 ```bash
-docker compose up --build
+docker compose up
 ```
 
-Mở `http://localhost:8000`. Tài khoản mặc định cục bộ:
+- Web: http://localhost:5173
+- API: http://localhost:8000
 
-```text
-sadmin
-ChangeMe123!
-```
+## Lưu ý vận hành
 
-## API chính
-
-```text
-POST /api/v1/auth/register
-POST /api/v1/auth/login
-GET  /api/v1/auth/me
-GET  /api/v1/admin/users/pending
-POST /api/v1/admin/users/{id}/approve
-POST /api/v1/admin/users/{id}/scope
-GET  /api/v1/administrative/wards
-POST /api/v1/administrative/sync?province_code=46
-GET  /api/v1/health
-```
-
-## Việc cần phát triển tiếp
-
-- Migration Alembic và cơ chế rollback.
-- CRUD cơ quan, nhóm, trạm, thành viên và ủy quyền.
-- Upload/kiểm tra KML, GeoJSON; lưu geometry PostGIS.
-- Overlay T1/T2, thống kê riêng rừng tự nhiên và rừng trồng.
-- Sinh PDF theo thể thức văn bản hành chính và ký số.
-- MFA cho SAdmin/Admin, rate limiting, object storage và virus scanning.
-- Không dùng tile Google làm nguồn phân tích; chỉ dùng làm lớp nền theo điều khoản dịch vụ.
-
-## Lưu ý adapter 34tinhthanh.com
-
-Schema API ngoài có thể thay đổi. Endpoint đồng bộ đã xử lý cả response dạng mảng và `{ data: [...] }`, nhưng cần chạy thử trên môi trường staging và lưu bản dữ liệu đã kiểm duyệt trước khi đưa vào báo cáo chính thức.
-
-
-## Cơ chế mật khẩu
-
-Hệ thống dùng `PBKDF2-SHA256` cho mật khẩu mới, không bị giới hạn 72 byte như bcrypt.
-Các mật khẩu bcrypt cũ vẫn được xác minh để tương thích dữ liệu đã tồn tại.
+- Google Satellite và lớp nhãn đang sử dụng URL tile không cần API key; cần rà soát điều khoản Google trước khi dùng chính thức.
+- Render Postgres Free hết hạn sau 30 ngày; dữ liệu nghiệp vụ thật nên dùng gói trả phí và cấu hình sao lưu.
+- Khi đổi tên dịch vụ/domain, cập nhật `CORS_ORIGINS` và `VITE_API_URL` trong Render.

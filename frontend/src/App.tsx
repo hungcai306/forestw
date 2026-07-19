@@ -5,7 +5,7 @@ import './styles.css';
 
 type User={full_name:string;role:string;admin_username:string;email?:string|null};
 export default function App(){
- const [adminUsername,setAdminUsername]=useState('sadmin'); const [password,setPassword]=useState('ChangeMe123!');
+ const [adminUsername,setAdminUsername]=useState('sadmin'); const [password,setPassword]=useState('');
  const [user,setUser]=useState<User|null>(null); const [error,setError]=useState('');
  async function login(){try{const {data}=await api.post('/auth/login',{admin_username:adminUsername,password});localStorage.setItem('token',data.access_token);setUser(data.user);setError('');}catch(e:any){setError(e.response?.data?.detail||'Không đăng nhập được');}}
  if(!user) return <main className="login"><section><h1>Hue ForestWatch</h1><p>Giám sát biến động rừng và quản trị phân quyền</p><input value={adminUsername} onChange={e=>setAdminUsername(e.target.value)} placeholder="Tên đăng nhập" autoComplete="username"/><input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Mật khẩu" autoComplete="current-password"/><button onClick={login}>Đăng nhập</button>{error&&<small>{error}</small>}</section></main>;
