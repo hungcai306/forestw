@@ -1,7 +1,7 @@
 FROM node:22-alpine AS frontend-build
 WORKDIR /frontend
 COPY frontend/package*.json ./
-RUN npm install
+RUN npm ci --no-audit --no-fund
 COPY frontend/ ./
 ENV VITE_API_URL=/api/v1
 RUN npm run build
