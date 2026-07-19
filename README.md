@@ -11,14 +11,14 @@ Monorepo MVP cho hệ thống giám sát biến động rừng TP Huế, quản 
 - Phạm vi quyền theo nhóm, trạm, mã xã/phường và loại rừng.
 - Đồng bộ danh mục xã/phường qua adapter API `34tinhthanh.com`.
 - Health check, Swagger API và Render Blueprint.
-- Giao diện bản đồ khởi tạo tại TP Huế với Google Satellite và lớp nhãn Google.
+- Bản đồ nền Google Satellite và lớp nhãn Google, không cấu hình API key.
 
 ## Deploy lên Render
 
 1. Tạo repository GitHub và đẩy toàn bộ thư mục này lên nhánh `main`.
 2. Trong Render chọn **New → Blueprint**, kết nối repository. Render mặc định đọc `render.yaml` ở thư mục gốc.
 3. Nhập các biến được yêu cầu:
-   - `SADMIN_EMAIL`: email Tổng Quản trị viên.
+   - `SADMIN_USERNAME`: tên đăng nhập Tổng Quản trị viên, mặc định `sadmin`.
    - `SADMIN_PASSWORD`: mật khẩu ban đầu, tối thiểu 8 ký tự.
 4. Chọn **Deploy Blueprint**.
 5. Sau khi deploy, truy cập URL dịch vụ. Swagger tại `/docs`; health check tại `/api/v1/health`.
@@ -35,7 +35,7 @@ docker compose up --build
 Mở `http://localhost:8000`. Tài khoản mặc định cục bộ:
 
 ```text
-sadmin@example.gov.vn
+sadmin
 ChangeMe123!
 ```
 
@@ -61,7 +61,7 @@ GET  /api/v1/health
 - Overlay T1/T2, thống kê riêng rừng tự nhiên và rừng trồng.
 - Sinh PDF theo thể thức văn bản hành chính và ký số.
 - MFA cho SAdmin/Admin, rate limiting, object storage và virus scanning.
-- Google Satellite và nhãn Google đang được nạp bằng URL tile trực tiếp, không cần API key. Đây là endpoint không được Google công bố như một API ổn định; chỉ nên dùng làm lớp nền hiển thị, không dùng làm nguồn phân tích và cần rà soát điều khoản Google trước khi vận hành chính thức.
+- Không dùng tile Google làm nguồn phân tích; chỉ dùng làm lớp nền theo điều khoản dịch vụ.
 
 ## Lưu ý adapter 34tinhthanh.com
 

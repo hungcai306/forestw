@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     secret_key: str = "change-me"
     access_token_expire_minutes: int = 480
     cors_origins: str = "http://localhost:5173"
-    sadmin_email: str = "sadmin@example.gov.vn"
+    sadmin_username: str = "sadmin"
     sadmin_password: str = "ChangeMe123!"
     admin_api_base: str = "https://34tinhthanh.com/api"
     model_config = SettingsConfigDict(env_file=".env", extra="ignore", case_sensitive=False)
