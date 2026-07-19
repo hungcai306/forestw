@@ -66,3 +66,9 @@ GET  /api/v1/health
 ## Lưu ý adapter 34tinhthanh.com
 
 Schema API ngoài có thể thay đổi. Endpoint đồng bộ đã xử lý cả response dạng mảng và `{ data: [...] }`, nhưng cần chạy thử trên môi trường staging và lưu bản dữ liệu đã kiểm duyệt trước khi đưa vào báo cáo chính thức.
+
+
+## Cơ chế mật khẩu
+
+Hệ thống dùng `PBKDF2-SHA256` cho mật khẩu mới, không bị giới hạn 72 byte như bcrypt.
+Các mật khẩu bcrypt cũ vẫn được xác minh để tương thích dữ liệu đã tồn tại.
